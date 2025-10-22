@@ -1,0 +1,43 @@
+services:
+
+  secunda_tt_service:
+    container_name: secunda_tt_service
+    image: secunda_tt_service
+    env_file:
+      - .env
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    ports:
+      - "${SERVICE_OUTER_PORT}:${SERVICE_INNER_PORT}"
+    volumes:
+      - ../logs:/app/logs
+    networks:
+      - secunda_tt_network
+    depends_on:
+      - secunda_tt_postgres
+
+  secunda_tt_postgres:
+    container_name: secunda_tt_postgres
+    image: postgres:16.3-alpine3.19
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../logs:/app/logs
+    ports:
+      - "${DB_PORT}:5432"
+    networks:
+      - secunda_tt_network
+
+volumes:
+  postgres_data:
+
+networks:
+  secunda_tt_network:
+    name: secunda_tt_network
+    external: true

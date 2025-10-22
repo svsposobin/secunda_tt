@@ -1,0 +1,48 @@
+version: '3'
+
+tasks:
+
+  create_docker_network:
+    desc: "Create test network for project"
+    cmd: sudo docker network create secunda_tt_network && sudo docker network ls
+
+  delete_docker_network:
+    desc: "Delete test network"
+    cmd: sudo docker network rm secunda_tt_network  && sudo docker network ls
+
+  build_docker:
+    desc: "Run services with docker"
+    cmd: sudo docker compose -f deploy/docker-compose.prod.yml up -d --build
+
+  start_postgres_in_docker:
+    desc: "Build postgres in container"
+    cmd: sudo docker compose --env-file .env.test -f deploy/docker-compose.postgres.yml up -d --build
+
+  run_service:
+    desc: "Run service"
+    cmd: sudo docker start secunda_tt_service secunda_tt_postgres
+
+  check_containers:
+    desc: "Check all containers"
+    cmd: sudo docker ps -a --filter "name=secunda_tt_service" --filter "name=secunda_tt_postgres"
+
+  stop_postgres_service:
+    desc: "Stop postgres"
+    cmd: sudo systemctl stop postgresql
+
+  start_postgres_service:
+    desc: "Start postgres"
+    cmd: sudo systemctl start postgresql
+
+  stop_service:
+    desc: "Stop service"
+    cmd: sudo docker stop secunda_tt_service secunda_tt_postgres
+
+  delete_containers:
+    desc: "Delete containers"
+    cmd: sudo docker rm -f secunda_tt_service secunda_tt_postgres && sudo docker rmi secunda_tt_service
+
+# Details:
+# Network name: secunda_tt_network
+# Main service name: secunda_tt_service
+# Postgres: secunda_tt_postgres

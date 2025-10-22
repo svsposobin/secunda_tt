@@ -1,0 +1,20 @@
+# General
+.venv
+__pycache__/
+*.pyc
+
+# Others
+.flake8
+.gitignore
+LICENSE
+pyproject.toml
+README.md
+pytest.ini
+requirements.txt
+Taskfile.yml
+
+# env
+.env*
+
+# Workflows
+**/github/workflows/
